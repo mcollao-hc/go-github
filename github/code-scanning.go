@@ -261,6 +261,23 @@ func (s *CodeScanningService) GetAlert(ctx context.Context, owner, repo string, 
 	return a, resp, nil
 }
 
+func (s *CodeScanningService) UpdateAlert(ctx context.Context, owner, repo string, id int64, opts *Alert) (*Alert, *Response, error) {
+	u := fmt.Sprintf("repos/%v/%v/code-scanning/alerts/%v", owner, repo, id)
+
+	req, err := s.client.NewRequest("PATCH", u, opts)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	a := new(Alert)
+	resp, err := s.client.Do(ctx, req, a)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return a, resp, nil
+}
+
 // UploadSarif uploads the result of code scanning job to GitHub.
 //
 // For the parameter sarif, you must first compress your SARIF file using gzip and then translate the contents of the file into a Base64 encoding string.
